@@ -63,9 +63,9 @@ export default {
       console.log(eid);
       
       // for (i in eid){
-      //   db.collection("empleados").doc(mid).update({
-      //     empleadoAC: db.collection("empleados").doc(i.value)
-      //   })
+        // db.collection("empleados").doc(mid).update({
+        //   empleadoAC: db.collection("empleados").doc(i.value)
+        // })
       // }
 
       // for (i in eid){

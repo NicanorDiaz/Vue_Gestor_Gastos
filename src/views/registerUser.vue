@@ -113,7 +113,9 @@ export default {
                   .doc()
                   .set({
                     titulo:"",
-                    nafta:""
+                    nafta:0,
+                    hospedaje:0,
+                    comida:0,
                   });
             },
 
