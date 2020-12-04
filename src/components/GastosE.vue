@@ -36,8 +36,7 @@
 // @ is an alias to /src
 import Detail from "./CarDetails.vue";
 import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
+import db from "./firebaseInit";
 
 export default {
   name: "Home",
@@ -49,42 +48,45 @@ export default {
       title: "",
       nafta: "",
       empleado: "",
-      archivos: {},
+      archivos: [],
       files: [],
       gasto: {},
     };
   },
-  async created() {
-    const gastosRef = await firebase.firestore().collectionGroup("gastos");
-      gastosRef.onSnapshot((snap) => {
-        snap.forEach((doc) => {
-          this.archivos[doc.id] = {
+  created() {
+    let user = firebase.auth().currentUser;
+    let uid = user.uid;
+    firebase.firestore().collection("empleados").doc(uid).collection("gastos")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = {
             id: doc.id,
-            ...doc.data(),
+            titulo: doc.data().titulo,
           };
+          this.archivos.push(data);
         });
       });
   },
   methods: {
     addFile() {
-      let newFile = {
-        id: +Date.now(),
-        title: this.title,
-        nafta: this.nafta,
-      };
-      this.files.push(newFile);
-      this.dialog = false;
+      let user = firebase.auth().currentUser;
+      let uid = user.uid;
 
-      var user = firebase.auth().currentUser;
-      const db = firebase.firestore();
-
-      var uid = user.uid;
       let empleado = db.collection("empleados");
 
       let xd = empleado.doc(uid).collection("gastos").doc().set({
         titulo: this.title,
         nafta: this.nafta,
       });
+      this.archivos.push({
+        id: +new Date(),
+        titulo: this.title,
+        nafta: this.nafta,
+      });
+      this.title = " ";
+      this.nafta = " ";
+      this.dialog = false;
     },
     onClick(file) {
       this.showCard = true;

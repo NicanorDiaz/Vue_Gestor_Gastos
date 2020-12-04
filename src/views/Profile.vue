@@ -1,6 +1,5 @@
 <template>
-  <div class="about pa-8">
-    <h1>Profile Page</h1>
+  <div class="about pt-5 pl-2">
     <InfoP />
   </div>
 </template>

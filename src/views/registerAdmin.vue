@@ -6,35 +6,52 @@
         <v-container fluid>
           <v-row>
             <v-col>
-              <v-text-field
-                label="Nombre"
-                v-model="name"
-                prepend-icon="mdi-alpha-n-box"
-                required
-              ></v-text-field>
-              <v-text-field
-                label="Apellido"
-                v-model="apellido"
-                prepend-icon="mdi-alpha-a-box"
-                required
-              ></v-text-field>
-              <v-text-field
-                label="Email"
-                v-model="email"
-                :rules="emailRules"
-                prepend-icon="mdi-account-circle"
-                required
-              ></v-text-field>
-              <v-text-field
-                ref="password"
-                v-model="password"
-                label="Password"
-                :type="showPassword ? 'text' : 'password'"
-                prepend-icon="mdi-lock"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="showPassword = !showPassword"
-                required
-              ></v-text-field>
+              <form ref="form" :v-model="valid">
+                <v-text-field
+                  label="Nombre"
+                  v-model="name"
+                  prepend-icon="mdi-alpha-n-box"
+                  :rules="nameR"
+                ></v-text-field>
+                <v-text-field
+                  label="Apellido"
+                  v-model="apellido"
+                  prepend-icon="mdi-alpha-a-box"
+                  :rules="lastnameR"
+                ></v-text-field>
+                <v-text-field
+                  v-model.number="edad"
+                  prepend-icon="mdi-alpha-e-box"
+                  :rules="age"
+                  type="number"
+                ></v-text-field>
+                <v-text-field
+                  label="Email"
+                  v-model="email"
+                  :rules="emailRules"
+                  prepend-icon="mdi-account-circle"
+                ></v-text-field>
+                <v-text-field
+                  ref="password"
+                  v-model="password"
+                  label="Password"
+                  :type="showPassword ? 'text' : 'password'"
+                  prepend-icon="mdi-lock"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="showPassword = !showPassword"
+                  :rules="passwordR"
+                ></v-text-field>
+                <!-- <v-text-field
+                  ref="password"
+                  v-model="passwordManager"
+                  label="Password Admin"
+                  :type="showPasswordM ? 'text' : 'password'"
+                  prepend-icon="mdi-lock"
+                  :append-icon="showPasswordM ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="showPasswordM = !showPasswordM"
+                  :rules="passwordMR"
+                ></v-text-field> -->
+              </form>
             </v-col>
           </v-row>
         </v-container>
@@ -49,57 +66,73 @@
 
 <script>
 import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
+import db from "../components/firebaseInit";
+
 export default {
   name: "Register_Admin",
 
   data() {
     return {
+      valid: true,
       email: "",
-      password: "",
-      name: "",
-      apellido: "",
-      showPassword: false,
-      pass: false,
       emailRules: [
         (v) =>
-          !v ||
+          !!v ||
           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be valid",
+          "Ingrese un E-mail valido",
       ],
+      name: "",
+      nameR: [(val) => !!val || "Porfavor ingrese un Nombre"],
+
+      apellido: "",
+      lastnameR: [(val) => !!val || "Porfavor ingrese un Apellido"],
+
+      pass: false,
+      uid: null,
+      edad: 0,
+      age: [(val) => val > 17 || "Usted no es mayor de edad"],
+
+      password: "",
+      passwordR: [(val) => !!val || "Porfavor alguna Contraseña"],
+      showPassword: false,
+
+      // passwordManager: "",
+      // passwordMR: [
+      //   (val) => !!val || "Contraseña manager incorrecta",
+      // ],
+      // showPasswordM: false,
     };
   },
   methods: {
-    register: function () {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(
-          (user) => {
-            var uid = user.user.uid;
-            return firebase
-              .firestore()
-              .collection("empleados")
-              .doc(uid)
-              .set({
+    async register() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        await firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then(
+            (user) => {
+              var uid = user.user.uid;
+              return firebase.firestore().collection("empleados").doc(uid).set({
                 nombre: this.name,
                 apellido: this.apellido,
-                manager:true,
-                empleados: [],
-              })
-          },
-          alert("Su usuario ha sido creado"),
-          this.pass = true,
-          (err) => {
-            alert(err);
-          }
-        )
+                edad:this.edad,
+                manager: true,
+                empleadosAC: [],
+              });
+            },
+
+            alert("Su usuario ha sido creado"),
+            (this.pass = true),
+            (err) => {
+              alert(err);
+            }
+          );
+      }
     },
-    nextPage: function(){
-      this.$router.go({path: this.$router.path})
-    }
+    nextPage: function () {
+      this.$router.go({ path: this.$router.path });
+    },
   },
 };
 </script>

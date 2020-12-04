@@ -1,11 +1,12 @@
 <template>
   <v-row>
-    <v-col v-if="!manager">
-      <EmpleadoView />
-    </v-col>
     <v-col v-if="manager">
       <ManagerView />
     </v-col>
+    <v-col v-if="!manager">
+      <EmpleadoView />
+    </v-col>
+    
   </v-row>
 </template>
 
@@ -20,7 +21,7 @@ import "firebase/auth";
 export default {
  components: { EmpleadoView, ManagerView },
  data (){
-   return{ manager: false}
+   return{ manager: false }
  },
  created() {
     var user = firebase.auth().currentUser;

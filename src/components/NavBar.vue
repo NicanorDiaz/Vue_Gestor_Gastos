@@ -49,7 +49,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar color="primary" dark app>
+    <v-app-bar dark app>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Title</v-toolbar-title>

@@ -1,64 +1,79 @@
 <template>
   <div class="home pl-6 pt-2">
-    <div v-for="file in empleados" :key="file.id">
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ file.titulo }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
+    <div class="form-group form-check" v-for="file in empleados" :key="file.id">
+      <label class="form-check-label" :for="file.id">{{ file.nombre }}</label>
+      <input
+        type="checkbox"
+        v-model="chequeados.check"
+        :id="file.nombre"
+        :value="file.id"
+      />
     </div>
+    <div class="form-group">
+      {{ chequeados.check }}
+    </div>
+
+    <div class="d-flex justify-end mr-5 mt-2">
+      <v-btn fab dark right @click="confirmar">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </div>
+
+
   </div>
 </template>
 
 <script>
+import db from "./firebaseInit";
 import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
 
 export default {
   name: "ShowEmpleados",
+  props: ["detail"],
   data() {
     return {
-      empleados: {},
+      empleados: [],
+      chequeados: {
+        check: [],
+      },
     };
   },
   created() {
-    const db = firebase.firestore();
-    let empleado = db.collection("empleados");
-    // let query = empleado
-    //   .where("manager", "==", false)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot.empty) {
-    //       console.log("No matching documents.");
-    //       return;
-    //     }
-
-    //     snapshot.forEach((doc) => {
-    //     //   console.log(doc.id, "=>", doc.data());
-    //       this.empleados = (doc.id, "=>", doc.data());
-    //       console.log(this.empleados);
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log("Error getting documents", err);
-    //   });
-
-    let fua = empleado.where("manager", '==', false);
-    fua.onSnapshot((snap) => {
-        snap.forEach((doc) => {
-            this.empleados[doc.id] = {
-                id: doc.id,
-            ...doc.data(),
-            }
-        })
-        console.log(this.empleados);
-    })
-
+    db.collection("empleados")
+      .where("manager", "==", false)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = {
+            id: doc.id,
+            nombre: doc.data().nombre,
+            apellido: doc.data().apellido,
+          };
+          this.empleados.push(data);
+        });
+      });
   },
   methods: {
-    onClick() {},
+    async confirmar() {
+      let manager = firebase.auth().currentUser;
+      let mid = manager.uid;
+      let i =0;
+      let eid = JSON.parse(JSON.stringify(this.chequeados.check));
+
+      console.log(eid);
+      
+      // for (i in eid){
+      //   db.collection("empleados").doc(mid).update({
+      //     empleadoAC: db.collection("empleados").doc(i.value)
+      //   })
+      // }
+
+      // for (i in eid){
+      //   console.log(i);
+      // }
+
+     
+    },
   },
 };
 </script>

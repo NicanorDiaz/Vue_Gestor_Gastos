@@ -1,19 +1,32 @@
 <template>
   <v-row>
     <v-col>
+      <v-col align="center">
+        <v-avatar class="avatar" size="80" color="indigo">
+          <v-icon v-if="!isorNot" size="40">mdi-chess-knight</v-icon>
+          <v-icon v-if="isorNot" size="40">mdi-chess-king</v-icon>
+        </v-avatar>
+        <h2 class="nombre-apellido red--text">
+          {{ empleado.nombre + " " + empleado.apellido }}
+        </h2>
+
+        <h3 class="grey--text">{{ email }}</h3>
+      </v-col>
       <br />
-      <h3>{{ email }}</h3>
+      <h2 v-if="isorNot">{{ empleado.empleados }}</h2>
+      <h2 v-if="!isorNot">{{ empleado.jefe }}</h2>
+      <v-row class="rowCargo pl-5">
+        <v-icon color="green pl-10" size="30">mdi-tie</v-icon>
+        <h2 class="cargo mr-5 pl-2">Cargo:</h2>
+        <h2 v-if="isorNot" class="manager grey--text">Manager</h2>
+        <h2 v-if="!isorNot" class="empleado grey--text">Empleado</h2>
+      </v-row>
       <br />
-      <h3>{{ empleado.nombre }}</h3>
-      <br />
-      <h3>{{ empleado.apellido }}</h3>
-      <br />
-      <h3 v-if="isorNot">{{empleado.empleados}}</h3>
-      <h3 v-if="!isorNot">{{empleado.jefe}}</h3>
-      <h3 v-if="isorNot">Manager</h3>
-      <h3 v-if="!isorNot">Empleado</h3>
-      <br />
-      <h3>{{ empleado.jefe }}</h3>
+      <v-row class="rowEdad pl-5">
+        <v-icon color="green pl-10" size="30">mdi-human-greeting</v-icon>
+        <h2 class="edad mr-5 pl-2">Edad:</h2>
+        <h2 class="edads grey--text">{{ empleado.edad }}</h2>
+      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -35,7 +48,6 @@ export default {
     var user = firebase.auth().currentUser;
     this.email = user.email;
     const db = firebase.firestore();
-
 
     var uid = user.uid;
 
