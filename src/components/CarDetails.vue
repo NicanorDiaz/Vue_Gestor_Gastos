@@ -4,7 +4,7 @@
       <v-card-text>
         <h1 class="text-center">{{ detail.titulo }}</h1>
         <br />
-        <h3 class="text-center grey--text">{{ detail.date }}</h3>
+        <h3 class="text-center grey--text">{{ detail.date}}</h3>
         <br />
         <h2>Nafta: {{ detail.nafta }}$</h2>
         <br />

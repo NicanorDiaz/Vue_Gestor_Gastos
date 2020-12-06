@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <h1>Login</h1>
+    <h1 class="text-center pt-3 red--text">Login </h1>
     <v-form ref="form" @submit.prevent="submit">
       <v-container fluid>
         <v-row>

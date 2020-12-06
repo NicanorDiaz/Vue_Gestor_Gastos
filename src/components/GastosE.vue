@@ -135,6 +135,7 @@ export default {
       this.hospedaje="0";
       this.comida= "0";
       this.total= "0";
+      this.date= [];
       this.dialog = false;
       }
 

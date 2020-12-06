@@ -1,7 +1,9 @@
 <template>
   <div class="home pl-6 pt-2">
     <div class="form-group form-check" v-for="file in empleados" :key="file.id">
-      <label class="form-check-label" :for="file.id">{{ file.nombre }}</label>
+      <label class="form-check-label" :for="file.id"
+        >{{ file.nombre }} {{ file.apellido }}
+      </label>
       <input
         type="checkbox"
         v-model="chequeados.check"
@@ -18,8 +20,6 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </div>
-
-
   </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
   created() {
     db.collection("empleados")
       .where("manager", "==", false)
+      .where("jefe", "==", "")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -57,22 +58,21 @@ export default {
     async confirmar() {
       let manager = firebase.auth().currentUser;
       let mid = manager.uid;
-      let i =0;
-      let eid = JSON.parse(JSON.stringify(this.chequeados.check));
-
-      console.log(eid);
-      
-      // for (i in eid){
-        // db.collection("empleados").doc(mid).update({
-        //   empleadoAC: db.collection("empleados").doc(i.value)
-        // })
-      // }
-
-      // for (i in eid){
-      //   console.log(i);
-      // }
-
-     
+      db.collection("empleados")
+        .doc(mid)
+        .update({
+          empleadoAC: this.chequeados.check.map((x) =>
+            db.collection("empleados").doc(x)
+          ),
+        })
+        .then(
+          this.chequeados.check.map((x) =>
+            db
+              .collection("empleados")
+              .doc(x)
+              .update({ jefe: db.collection("empleados").doc(mid) })
+          )
+        );
     },
   },
 };
