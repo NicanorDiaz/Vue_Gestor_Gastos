@@ -48,26 +48,29 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-app-bar dark app>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Title</v-toolbar-title>
+      <v-toolbar-title v-if="$route.name !='Login' ">{{$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else>Bienvenido</v-toolbar-title>
     </v-app-bar>
   </div>
 </template>
 
 <script>
 import firebase from "firebase/app";
-import "firebase/auth";
+import db from "../components/firebaseInit";
 export default {
   data: () => ({
     drawer: false,
     islog: false,
     currentUser: false,
     items: [
+      { title: "Inbox", 
+        icon: "mdi-inbox", 
+        to: "/inbox" 
+      },
       {
-        title: "Inicio",
+        title: "Insertar",
         icon: "mdi-text-box-plus",
         to: "/home",
       },
@@ -76,6 +79,7 @@ export default {
         icon: "mdi-account",
         to: "/profile",
       },
+      
     ],
     auths: [
       {
@@ -109,7 +113,7 @@ export default {
           .auth()
           .signOut()
           .then(() => {
-            this.$router.go({path: this.$router.path})
+            this.$router.go({ path: this.$router.path });
           });
       }
     },

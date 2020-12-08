@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col v-if="manager">
+    <v-col v-if="!manager">
       <ManagerView />
     </v-col>
-    <v-col v-if="!manager">
+    <v-col v-if="manager">
       <EmpleadoView />
     </v-col>
     
@@ -12,20 +12,18 @@
 
 <script>
 // @ is an alias to /src
-import EmpleadoView from "@/components/GastosE.vue";
-import ManagerView from "@/components/ShowEmpl.vue";
+import EmpleadoView from "@/components/empleados/GastosE.vue";
+import ManagerView from "@/components/managers/ShowEmpl.vue";
 import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
+import db from "../components/firebaseInit";
 
 export default {
  components: { EmpleadoView, ManagerView },
  data (){
-   return{ manager: false }
+   return{ manager: true }
  },
  created() {
     var user = firebase.auth().currentUser;
-    this.email = user.email;
     const db = firebase.firestore();
 
     var uid = user.uid;
@@ -38,7 +36,7 @@ export default {
         var newData = doc.data();
         this.empleado = newData;
         if (newData.manager == true) {
-          this.manager = true;
+          this.manager = false;
         }
       }
     });

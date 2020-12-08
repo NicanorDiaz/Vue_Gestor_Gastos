@@ -1,15 +1,19 @@
 <template>
   <div class="home pl-6 pt-2">
+    <h2>Empleados sin Jefes:</h2>
     <div class="form-group form-check" v-for="file in empleados" :key="file.id">
-      <label class="form-check-label" :for="file.id"
-        >{{ file.nombre }} {{ file.apellido }}
-      </label>
-      <input
-        type="checkbox"
-        v-model="chequeados.check"
-        :id="file.nombre"
-        :value="file.id"
-      />
+      <v-row>
+        <v-col>
+          <v-checkbox
+            :value="file.id"
+            :id="file.nombre"
+            v-model="chequeados.check"
+            :v-for="file.id"
+            :label="file.nombre + ' ' + file.apellido"
+          >
+          </v-checkbox>
+        </v-col>
+      </v-row>
     </div>
     <div class="form-group">
       {{ chequeados.check }}
@@ -24,8 +28,9 @@
 </template>
 
 <script>
-import db from "./firebaseInit";
+import { db, fieldValue } from "../firebaseInit";
 import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: "ShowEmpleados",
@@ -55,9 +60,29 @@ export default {
       });
   },
   methods: {
-    async confirmar() {
+    confirmar() {
       let manager = firebase.auth().currentUser;
       let mid = manager.uid;
+      let managerFirestore = db.collection("empleados").doc(mid);
+      // managerFirestore.update({
+      //   empleadoAC: fieldValue.arrayUnion(
+      //     { empleado: this.chequeados.check.map((x) => db.collection("empleados").doc(x))}
+      //   ),
+      // });
+
+      // let transaction = db.runTransaction((t) => {
+      //   return t.get(managerFirestore).then((doc) => {
+      //     t.update(managerFirestore, {
+      //       empleadoAC: [
+      //         ...doc.data().empleadoAC,
+      //         this.chequeados.check.map((x) =>
+      //           db.collection("empleados").doc(x)
+      //         ),
+      //       ],
+      //     });
+      //   });
+      // });
+
       db.collection("empleados")
         .doc(mid)
         .update({

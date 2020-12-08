@@ -1,7 +1,6 @@
 <template>
   <div id="register">
     <v-card width="500" class="mx-auto mt-9">
-      <h1>Register Admin</h1>
       <v-form ref="form" @submit.prevent="submit">
         <v-container fluid>
           <v-row>
@@ -66,7 +65,7 @@
 
 <script>
 import firebase from "firebase/app";
-import db from "../components/firebaseInit";
+import {db, fieldValue} from "../components/firebaseInit";
 
 export default {
   name: "Register_Admin",
@@ -113,12 +112,13 @@ export default {
           .then(
             (user) => {
               var uid = user.user.uid;
-              return firebase.firestore().collection("empleados").doc(uid).set({
+              firebase.firestore().collection("empleados").doc(uid).set({
                 nombre: this.name,
                 apellido: this.apellido,
                 edad:this.edad,
                 manager: true,
                 empleadosAC: [],
+                email: this.email,
               });
             },
 

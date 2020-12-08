@@ -27,6 +27,7 @@
       </v-container>
       <v-card-actions class="pl-5">
         <v-btn @click="login" class="log"> Login </v-btn>
+        <v-snackbar v-model="snackBar" v-click-outside ="outSideSnack" color="red">{{text}}</v-snackbar>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -45,6 +46,8 @@ export default {
       email: "",
       password: "",
       showPassword:false,
+      snackBar:false,
+      text: null,
       emailRules: [
         (v) =>
           !v ||
@@ -63,10 +66,14 @@ export default {
             this.$router.go({path: this.$router.path})
           },
           (err) => {
-            alert(err);
+            this.text =err;
+            this.snackBar = true;
           }
         )
     },
+    outSideSnack(){
+      this.snackBar=false
+    }
   },
 };
 </script>

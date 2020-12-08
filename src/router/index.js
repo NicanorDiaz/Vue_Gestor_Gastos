@@ -4,7 +4,8 @@ import Home from '../views/Home.vue'
 import Login from '../views/login.vue'
 import RegisterUser from '../views/registerUser.vue'
 import RegisterAdmin from '../views/registerAdmin.vue'
-
+import Profile from '../views/Profile.vue'
+import Inbox from '../views/Inbox.vue'
 import firebase from "firebase/app";
 import 'firebase/auth';
 
@@ -48,11 +49,19 @@ const routes = [
   {
     path: '/profile',
     name: 'Profile',
+    component: Profile,
     meta:{
       requiresAuth:true
     },
-    component: () => import(/* webpackChunkName: "about" */ '../views/Profile.vue')
   },
+  {
+    path:'/inbox',
+    name: 'Inbox',
+    component: Inbox,
+    meta:{
+      requiresAuth:true
+    }
+  }
 ]
 
 const router = new VueRouter({
@@ -79,7 +88,7 @@ router.beforeEach((to, from, next) => {
   }else if(to.matched.some(record => record.meta.requiresGuest)){
     if( firebase.auth().currentUser){
       next({
-        path: '/home',
+        path: '/inbox',
         query: {
           redirect: to.fullPath
         },

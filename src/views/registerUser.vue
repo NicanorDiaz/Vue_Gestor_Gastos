@@ -1,7 +1,6 @@
 <template>
   <div id="register">
     <v-card width="500" class="mx-auto mt-9">
-      <h1>Register User</h1>
       <v-form ref="form" @submit.prevent="submit">
         <v-container fluid>
           <v-row>
@@ -95,30 +94,18 @@ export default {
         await firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
+          .then((user) => {
+            let uid = user.user.uid;
+            firebase.firestore().collection("empleados").doc(uid).set({
+              nombre: this.name,
+              apellido: this.apellido,
+              jefe: "",
+              manager: false,
+              edad: this.edad,
+              email: this.email,
+            });
+          })
           .then(
-            (user) => {
-              let uid = user.user.uid;
-              firebase.firestore().collection("empleados").doc(uid).set({
-                nombre: this.name,
-                apellido: this.apellido,
-                jefe: "",
-                manager: false,
-                edad: this.edad,
-              }),
-                firebase
-                  .firestore()
-                  .collection("empleados")
-                  .doc(uid)
-                  .collection("gastos")
-                  .doc()
-                  .set({
-                    titulo:"",
-                    nafta:0,
-                    hospedaje:0,
-                    comida:0,
-                  });
-            },
-
             alert("Su usuario ha sido creado"),
             (this.pass = true),
             (err) => {
