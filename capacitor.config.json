@@ -1,0 +1,13 @@
+{
+  "appId": "me.nica.gestorgastos",
+  "appName": "Gestor de gastos",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

@@ -7,6 +7,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@capacitor/android": "^2.4.4",
+    "@capacitor/cli": "^2.4.4",
+    "@capacitor/core": "^2.4.4",
     "bootstrap": "^4.5.3",
     "core-js": "^3.6.5",
     "firebase": "^8.1.1",
