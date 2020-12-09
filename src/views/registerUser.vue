@@ -103,6 +103,7 @@ export default {
               manager: false,
               edad: this.edad,
               email: this.email,
+              idE: uid,
             });
           })
           .then(

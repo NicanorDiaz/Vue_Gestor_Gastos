@@ -10,7 +10,7 @@
             {{ manager.nombre + " " + manager.apellido }}
           </h2>
 
-          <h3 class="grey--text">{{ email }}</h3>
+          <h3 class="grey--text">{{ manager.email }}</h3>
         </v-col>
         <br />
         <v-row class="rowCargo pl-5">
@@ -25,18 +25,16 @@
           <h2 class="edads grey--text">{{ manager.edad }}</h2>
         </v-row>
         <br />
-        <v-row class="rowEmpleado pl-5">
-          <h2 class="mr-5 pl-2">Emleados a su cargo:</h2>
-          <h2
-            v-for="empleado in empleados"
-            :key="empleado.id"
-            
-            class="grey--text"
-          >
-            {{ empleado.nombre + " " + empleado.apellido }},
-          </h2>
-          <h2 v-if="!haveEmpleado" class="grey--text">Usted no tiene empleados a cargo</h2>
-        </v-row>
+        <h2 class="mr-5 pl-2">Empleado/s a su cargo:</h2>
+        <br />
+        <div v-for="empleado in empleados" :key="empleado.id" class="pl-5">
+          <v-row>
+            <h2>{{empleado.nombre}} {{empleado.apellido}} </h2>
+            <v-divider></v-divider>
+          </v-row>
+          <br />
+        </div>
+        <!-- <v-btn v-if="empleados" :model="EliminarEmpleado" color="error" height="30" @click="delteEmpleado()">Eleminar</v-btn> -->
       </v-col>
     </v-row>
   </v-flex>
@@ -51,17 +49,16 @@ export default {
 
   data() {
     return {
-      email: null,
       manager: null,
       eid: null,
       empleados: null,
       loading: true,
       haveEmpleado: false,
+      EliminarEmpleado:false,
     };
   },
   async created() {
     let user = firebase.auth().currentUser;
-    this.email = user.email;
     let uid = user.uid;
     const doc = await db.collection("empleados").doc(uid).get();
     this.manager = doc.data();
@@ -70,16 +67,32 @@ export default {
     }
 
     if (this.haveEmpleado) {
-      // console.log(this.manager.empleadoAC.map((x) => x.id));
       const empleados = await Promise.all(
         this.manager.empleadoAC.map((x) =>
-          db.collection("empleados").doc(x.id).get()
+          db.collection("empleados").doc(x.id).get()     
         )
       );
-
       this.empleados = empleados.map((x) => x.data());
+      
     }
     this.loading = false;
   },
+  methods:{
+    // async delteEmpleado(id){
+    //   let user = firebase.auth().currentUser;
+    //   let uid = user.uid;
+    //   await db.collection("empleados").doc(uid).set({
+    //     apellido: this.manager.apellido,
+    //     nombre: this.manager.nombre,
+    //     edad: this.manager.edad,
+    //     email: this.manager.email,
+    //     manager:true,
+    //     empleadosAC:[]
+    //   })
+    //   this.manager.empleadoAC.map((x) => db.collection("empleados").doc(x.id).update({
+    //       jefe: "",
+    //     }))
+    // }
+  }
 };
 </script>

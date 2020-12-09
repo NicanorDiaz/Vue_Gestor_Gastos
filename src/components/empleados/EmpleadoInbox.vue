@@ -6,7 +6,7 @@
         <div v-for="file in archivos" :key="file.id">
           <v-list-item>
             <v-list-item-content @click="onClick(file)">
-              <v-list-item-title :class="[file.aceptado ? 'green--text' : 'red--text']">{{ file.titulo }}</v-list-item-title>
+              <v-list-item-title :class="[typeof file.aceptado === 'undefined' ? 'grey--text' : file.aceptado ?'green--text' : 'red--text']">{{ file.titulo }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -51,8 +51,7 @@ export default {
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           var data = doc.data();
-          this.archivos.push(data);
-          
+          this.archivos.push(data);          
         });
       });
 
@@ -62,6 +61,7 @@ export default {
       .then(async (doc) => {
         let emplData = doc.data();
         this.idm = emplData.jefe;
+        
       });
   },
   methods: {

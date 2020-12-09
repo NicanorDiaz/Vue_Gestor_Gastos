@@ -40,7 +40,7 @@
                   @click:append="showPassword = !showPassword"
                   :rules="passwordR"
                 ></v-text-field>
-                <!-- <v-text-field
+                <v-text-field
                   ref="password"
                   v-model="passwordManager"
                   label="Password Admin"
@@ -49,7 +49,7 @@
                   :append-icon="showPasswordM ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="showPasswordM = !showPasswordM"
                   :rules="passwordMR"
-                ></v-text-field> -->
+                ></v-text-field>
               </form>
             </v-col>
           </v-row>
@@ -57,6 +57,7 @@
         <v-card-actions class="pl-5">
           <v-btn @click="register"> Register </v-btn>
           <v-btn @click="nextPage" v-if="pass"> Siguiente </v-btn>
+          <v-snackbar v-model="snackBar" v-click-outside ="outSideSnack" color="red">{{text}}</v-snackbar>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -89,17 +90,19 @@ export default {
       pass: false,
       uid: null,
       edad: 0,
-      age: [(val) => val > 17 || "Usted no es mayor de edad"],
+      age: [(val) => val > 17   ||  "Usted es Menor de Edad" ],
 
       password: "",
       passwordR: [(val) => !!val || "Porfavor alguna Contraseña"],
       showPassword: false,
 
-      // passwordManager: "",
-      // passwordMR: [
-      //   (val) => !!val || "Contraseña manager incorrecta",
-      // ],
-      // showPasswordM: false,
+      passwordManager: "",
+      passwordMR: [
+        (val) => val==='manager123' || "Contraseña manager incorrecta",
+      ],
+      showPasswordM: false,
+      snackBar:false,
+      text:"",
     };
   },
   methods: {
@@ -121,14 +124,16 @@ export default {
                 email: this.email,
               });
             },
-
-            alert("Su usuario ha sido creado"),
+          ).then( this.$router.go({ path: this.$router.path }));
             (this.pass = true),
             (err) => {
-              alert(err);
+              this.text =err;
+              this.snackBar = true;
             }
-          );
       }
+    },
+    outSideSnack(){
+      this.snackBar=false
     },
     nextPage: function () {
       this.$router.go({ path: this.$router.path });

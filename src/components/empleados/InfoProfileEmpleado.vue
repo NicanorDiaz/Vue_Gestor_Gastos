@@ -9,7 +9,7 @@
           {{ empleado.nombre + " " + empleado.apellido }}
         </h2>
 
-        <h3 class="grey--text">{{ email }}</h3>
+        <h3 class="grey--text">{{ empleado.email }}</h3>
       </v-col>
       <br />
 
