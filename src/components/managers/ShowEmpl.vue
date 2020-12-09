@@ -15,10 +15,6 @@
         </v-col>
       </v-row>
     </div>
-    <div class="form-group">
-      {{ chequeados.check }}
-    </div>
-
     <div class="d-flex justify-end mr-5 mt-2">
       <v-btn fab dark right @click="confirmar">
         <v-icon>mdi-plus</v-icon>
@@ -64,25 +60,7 @@ export default {
       let manager = firebase.auth().currentUser;
       let mid = manager.uid;
       let managerFirestore = db.collection("empleados").doc(mid);
-      // managerFirestore.update({
-      //   empleadoAC: fieldValue.arrayUnion(
-      //     { empleado: this.chequeados.check.map((x) => db.collection("empleados").doc(x))}
-      //   ),
-      // });
-
-      // let transaction = db.runTransaction((t) => {
-      //   return t.get(managerFirestore).then((doc) => {
-      //     t.update(managerFirestore, {
-      //       empleadoAC: [
-      //         ...doc.data().empleadoAC,
-      //         this.chequeados.check.map((x) =>
-      //           db.collection("empleados").doc(x)
-      //         ),
-      //       ],
-      //     });
-      //   });
-      // });
-
+      
       db.collection("empleados")
         .doc(mid)
         .update({
