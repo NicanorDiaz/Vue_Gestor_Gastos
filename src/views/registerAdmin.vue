@@ -112,24 +112,25 @@ export default {
         await firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
+          .then((user) => {
+            let uid = user.user.uid;
+            firebase.firestore().collection("empleados").doc(uid).set({
+              nombre: this.name,
+              apellido: this.apellido,
+              empleadoAC: [],
+              manager: true,
+              edad: this.edad,
+              email: this.email,
+              
+            });
+          })
           .then(
-            (user) => {
-              var uid = user.user.uid;
-              firebase.firestore().collection("empleados").doc(uid).set({
-                nombre: this.name,
-                apellido: this.apellido,
-                edad:this.edad,
-                manager: true,
-                empleadosAC: [],
-                email: this.email,
-              });
-            },
-          ).then( this.$router.go({ path: this.$router.path }));
+            alert("Su usuario ha sido creado"),
             (this.pass = true),
             (err) => {
-              this.text =err;
-              this.snackBar = true;
+              alert(err);
             }
+          );
       }
     },
     outSideSnack(){
